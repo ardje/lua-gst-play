@@ -1,4 +1,4 @@
-#! /usr/bin/env lua
+#!/usr/bin/lua5.2
 
 --
 -- Sample GStreamer application, based on public Vala GStreamer Video
@@ -14,7 +14,7 @@ if tonumber(Gst._version) >= 1.0 then
    local GstVideo = lgi.GstVideo
 end
 
-local app = Gtk.Application { application_id = 'org.lgi.samples.gstvideo' }
+local app = Gtk.Application { application_id = 'net.drgt.player' }
 
 local window = Gtk.Window {
    title = "LGI Based Video Player",
@@ -52,16 +52,9 @@ function window.child.quit:on_clicked()
    window:destroy()
 end
 
-local pipeline = Gst.Pipeline.new('mypipeline')
-local src = Gst.ElementFactory.make('autovideosrc', 'videosrc')
-local colorspace = Gst.ElementFactory.make('videoconvert', 'colorspace')
-                or Gst.ElementFactory.make('ffmpegcolorspace', 'colorspace')
-local scale = Gst.ElementFactory.make('videoscale', 'scale')
-local rate = Gst.ElementFactory.make('videorate', 'rate')
-local sink = Gst.ElementFactory.make('xvimagesink', 'sink')
+local playbin = Gst.ElementFactory.make('playbin', 'playbin')
+--local sink = Gst.ElementFactory.make('cluttersink', 'sink')
 
-pipeline:add_many(src, colorspace, scale, rate, sink)
-src:link_many(colorspace, scale, rate, sink)
 
 function window.child.play:on_clicked()
    pipeline.state = 'PLAYING'
@@ -104,7 +97,7 @@ end
 
 function window.child.video:on_realize()
    -- Retarget video output to the drawingarea.
-   sink:set_window_handle(self.window:get_xid())
+   --sink:set_window_handle(self.window:get_xid())
 end
 
 
