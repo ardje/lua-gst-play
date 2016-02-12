@@ -8,6 +8,8 @@
 local lgi = require 'lgi'
 local GLib = lgi.GLib
 local Gst = lgi.Gst
+local GObject=lgi.GObject
+--local gpb=lgi.Gst.Element.Pipeline.PlayBin
 local Enum=require'lgi.enum'
 
 
@@ -34,24 +36,22 @@ local function bus_callback(bus, message)
 end
 
 local dh=require"dumphash"
-local play = Gst.ElementFactory.make('playbin', 'play')
+local play = Gst.ElementFactory.make('playbin', 'playbin')
 local sink = Gst.ElementFactory.make('cluttersink', 'sink')
-play.uri = 'file:///home/dr/data/ICE2015_led.mov'
-play.flags=595
+--play.uri = 'file:///home/dr/data/ICE2015_led.mov'
+play.uri = 'udp://239.255.12.42:5004'
+--play._property.flags=595
+print(play)
 play.video_sink=sink
---play:set('flags',0x253)
---print('play:',play:_get'flags')
---play.flags:set(0x253)
---print(play.flags)
+Gst.util_set_object_arg(play,"flags",'deinterlace+native-video+soft-volume+audio+video')
 --play.flags=0x253 == GST_PLAY_FLAG_DEINTERLACE|GST_PLAY_FLAG_NATIVE_VIDEO|GST_PLAY_FLAG_SOFT_VOLUME|GST_PLAY_FLAG_AUDIO|GST_PLAY_FLAG_VIDEO
-
 --play.flags={'GST_PLAY_FLAG_DEINTERLACE','GST_PLAY_FLAG_NATIVE_VIDEO','GST_PLAY_FLAG_SOFT_VOLUME','GST_PLAY_FLAG_AUDIO','GST_PLAY_FLAG_VIDEO'}
---play.flags='GST_PLAY_FLAG
---play.uri = 'http://www.cybertechmedia.com/samples/raycharles.mov'
-print(Gst.PlayFlags)
 play.bus:add_watch(GLib.PRIORITY_DEFAULT, bus_callback)
 play.state = 'PLAYING'
-dh.dumphash(Gst:_resolve(true))
+--print("meeh")
+--dh.dumphash(Gst.BinFlags:_resolve(true))
+--print("moeh")
+----dh.dumphash(GObject:_resolve(true))
 
 -- Run the loop.
 main_loop:run()
