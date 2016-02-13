@@ -8,10 +8,6 @@
 local lgi = require 'lgi'
 local GLib = lgi.GLib
 local Gst = lgi.Gst
-local GObject=lgi.GObject
---local gpb=lgi.Gst.Element.Pipeline.PlayBin
-local Enum=require'lgi.enum'
-
 
 local main_loop = GLib.MainLoop()
 
@@ -21,6 +17,7 @@ local function bus_callback(bus, message)
       main_loop:quit()
    elseif message.type.EOS then
       print 'end of stream'
+	
       main_loop:quit()
    elseif message.type.STATE_CHANGED then
       local old, new, pending = message:parse_state_changed()
